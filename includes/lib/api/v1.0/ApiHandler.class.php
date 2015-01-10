@@ -1,9 +1,8 @@
 <?php
-class ajaxHandler 
+class apiHandler 
 {
-	//array with allowed requests
-	private $validRequests = array('postMessage' => array('POST'),'like' => array('POST'),
-	'retweetTwit' => array('POST'),'comment' => array('POST', 'GET'),'getPosts' => array('GET'));
+	//array with allowed requests and accompanying methods
+	private $validRequests = array('lookup' => array('GET'), 'friendsuggest' => array('GET');
 	
 	private $params;
 	private $requesType;
@@ -27,7 +26,7 @@ class ajaxHandler
 		
 	}
 	
-	/* checks if the function given is valid and calls the function passing the params to handle the request further*/
+	s
 	function handleRequest() 
 	{
 		if($params['function'] && in_array($params['function'],$validRequests) && in_array($requesType, $validRequests[$params['function']]) && function_exists($params['function']))
