@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS `oauth_session`;
-CREATE TABLE `oauth_session` (
+CREATE TABLE IF NOT EXISTS `oauth_session` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `session` char(32) NOT NULL DEFAULT '',
   `state` char(32) NOT NULL DEFAULT '',

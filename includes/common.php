@@ -12,10 +12,31 @@
 
     session_start();
 
+    function saveUser()
+    {
+        global $CIuser;
+        if($CIuser)
+        {
+            $CIuser->save();
+        }
+    }  
+    register_shutdown_function('saveUser');
+
     if(array_key_exists('id', $_SESSION))
     {
         $id = $_SESSION['id'];
-        $user = User::load($id);
+        $CIuser = User::load(array('id' => $id));
     }
+    if(!isset($CIuser) || !is_a($CIuser, 'User'))
+    {
+        $CIuser = new User();
+    }
+
+    /**
+     * Example usage of the OAuth backend
+     */
+    $media = $CIuser->getMedia('twitter');
+    $access_token = $media->getAccessToken();
+    $access_token_secret = $media->getAccessTokenSecret();  
 
 ?>

@@ -9,6 +9,8 @@ class Model
 
 	private $update = FALSE;
 
+	private $dirty = FALSE;
+
 	public function __construct($modelName, $dependencies = array())
 	{
 		$this->modelName = $modelName;
@@ -55,7 +57,7 @@ class Model
 	{
 		if(!in_array($property, $this->getFields()))
 		{
-			Logger:log(Logger::WARNING, "Property $property doesn't exist in Model ".get_called_class());
+			Logger::log(Logger::WARNING, "Property $property doesn't exist in Model ".get_called_class());
 			return $default;
 		}
 		$value = $this->$property->get();
@@ -66,10 +68,21 @@ class Model
 	{
 		if(!in_array($property, $this->getFields()))
 		{
-			Logger:log(Logger::WARNING, "Property $property doesn't exist in Model ".get_called_class());
+			Logger::log(Logger::WARNING, "Property $property doesn't exist in Model ".get_called_class());
 			return;
 		}
 		$this->$property->set($value);
+		$this->dirty = TRUE;
+	}
+
+	public function notDirty()
+	{
+		$this->dirty = FALSE;
+	}
+
+	public function isDirty()
+	{
+		return $this->dirty;
 	}
 
 	public function getFields()
@@ -79,6 +92,10 @@ class Model
 
 	public function save()
 	{
+		if(!$this->dirty)
+		{
+			return FALSE;
+		}
 		$db = Database::getInstance();
 		$insert = array();
 		$where = array();
@@ -88,6 +105,10 @@ class Model
 			$prop = $this->$field;
 			if($prop->is_autoincrement()) 
 			{
+				if($prop->is_primary())
+				{
+					$onlyPrimary = TRUE;
+				}
 				continue;
 			}
 
@@ -105,46 +126,59 @@ class Model
 		}
 		if($this->update)
 		{
-			$db->update($this->modelName, $insert, $where);
+			if(!empty($insert) && !empty($where))
+			{
+				$db->update($this->modelName, $insert, $where);
+			}
 		}
 		else
 		{
 			$db->insert($this->modelName, $insert);
 		}
+		return TRUE;
 	}
 
 	/**
 	 *  Model loading helper method
 	 */
-	public static function newInstance($where = array())
+	public static function newInstance($class, $where = array())
 	{
-		$class = get_called_class();
-		if($class == get_class())
+		if($class == "Model")
 		{
-			throw new Exception("Cannot instantiate the Model base: the static load method has to be invoked from a subclass");
+			throw new Exception("Cannot instantiate the Model base: the static load method has to be invoked from a subclass (called from $class)");
 		}
-		$instance = new $class;
 		if($where)
 		{
-			$instance->load($where);
+			return Model::_load($where, $class);
 		}
-		return $instance;
+		return new $class;
 	}
 
 	public static function load($where = array())
 	{
+		return Model::_load($where, get_called_class());
+	}
+
+	public static function _load($where = array(), $class)
+	{
 		$db = Database::getInstance();
-		$rows = $db->select($this->modelName, $where);
+		$obj = new $class();
+		$rows = $db->select($obj->modelName, $where);
 		if(!$rows || !is_array($rows))
 		{
-			return;
+			return FALSE;
 		}
-		$this->update = TRUE;
-		foreach($this->getFields() as $field)
+		if(isset($rows[0]) && count($rows[0]) > 0)
 		{
-			$prop = $this->$field;
+			$rows = $rows[0];
+		}
+		$obj->update = TRUE;
+		foreach($obj->getFields() as $field)
+		{
+			$prop = $obj->$field;
 			$prop->set($rows[$prop->getName()]);
 		}
+		return $obj;
 	}
 
 	public function delete($where = array())
@@ -192,6 +226,11 @@ class Property
 		$this->SQLType = $SQLType;
 		$this->SQLLength = $SQLLength;
 		$this->value = $default;
+	}
+
+	public function getName()
+	{
+		return $this->name;
 	}
 
 	public function get()
@@ -264,7 +303,7 @@ class Property
 		}
 		if($this->reference)
 		{
-			$sql .= ", FOREIGN KEY(".$this->name.") ".$this->reference->getSQL();
+			$sql .= ", FOREIGN KEY(".$this->name.") ".$this->reference->getSQL()." ON DELETE CASCADE";
 		}
 		return $sql;
 	}

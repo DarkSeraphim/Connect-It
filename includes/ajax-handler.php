@@ -1,5 +1,5 @@
 <?php
 	require 'lib/AjaxHandler.class';
-	handler = new ajaxHandler();
+	handler = new AjaxHandler();
 	handler->handleRequest();
 ?>

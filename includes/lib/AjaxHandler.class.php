@@ -1,5 +1,5 @@
 <?php
-class ajaxHandler 
+class AjaxHandler 
 {
 	//array with allowed requests
 	private $validRequests = array('postMessage' => array('POST'),'like' => array('POST'),

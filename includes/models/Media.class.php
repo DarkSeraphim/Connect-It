@@ -5,20 +5,63 @@ abstract class Media extends Model
 
 	public static $medias = array();
 
-	protected $uid;
+	private $name;
+
+	protected $userid;
+
+	protected $session_id;
+
+	private $access;
 
 	public function __construct($name)
 	{
-		$this->uid = (new Property("userid", "INT"))->unique()->refers("user", "id");
+		$this->name = $name;
+		$this->userid = (new Property("userid", "INT"))->unique()->refers("user", "id");
+		$this->session_id = new Property('session_id', 'INT');
 		parent::__construct("media_".$name);
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function getAccessToken()
+	{
+		$data = $this->getTokenData();
+		return is_a($data, "TokenData") ? $data->getAccessToken() : NULL;
+	}
+
+	public function getAccessTokenSecret()
+	{
+		$data = $this->getTokenData();
+		return is_a($data, "TokenData") ? $data->getAccessTokenSecret() : NULL;
+	}
+
+	public function getTokenData()
+	{
+		$sid = $this->session_id->get();
+		if(isset($sid))
+		{
+			if(is_a($this->access, "TokenData"))
+			{
+				return $this->access;
+			}
+			$rows = Database::getInstance()->exec("SELECT * FROM `oauth_session` WHERE `id` = $sid LIMIT 1");
+			if(!is_array($rows) || empty($rows[0]))
+			{
+				return FALSE;
+			}
+			return $this->access = new TokenData($rows[0]['access_token'], $rows[0]['access_token_secret']);
+		}
+		return FALSE;
 	}
 
 	public static function load($where = array())
 	{
-
 		if(is_array($where))
 		{
-			$where = array_key_exists('user', $where) ? $where['user'] : (array_key_exists('id', $where) ? $where['id'] : NULL);
+			$where = array_key_exists('user', $where) ? $where['user'] : (array_key_exists('id', $where) ? $where['id'] : $where);
 		}
 
 		if(!$where)
@@ -36,14 +79,47 @@ abstract class Media extends Model
 			$where = (int) $where;
 		}
 
+		if(!is_array($where))
+		{
+			$where = array('userid' => $where);
+		}
+		$return = array();
 		foreach(Media::$medias as $media)
 		{
-			$m = $media::load(array('userid' => $where));
+			$m = $media::load($where);
 			if(!empty($m))
 			{
-				$user->addMedia($m);
+				array_push($return , $m);
 			}
 		}
+		return $return;
+	}
+}
+
+class TokenData
+{
+	private $token;
+
+	private $secret;
+
+	public function __construct($token, $secret)
+	{
+		if(empty($token) || empty($secret))
+		{
+			throw new Exception("Invalid token and/or secret");
+		}
+		$this->token = $token;
+		$this->secret = $secret;
+	}
+
+	public function getAccessToken()
+	{
+		return $this->$token;
+	}
+
+	public function getAccessTokenSecret()
+	{
+		return $this->secret;
 	}
 }
 

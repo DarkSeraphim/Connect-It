@@ -6,9 +6,6 @@ class Database
 
     private $connection;
 
-    // TODO: implement query cache
-    private $cache;
-
     private function __construct()
     {
     }
@@ -22,6 +19,8 @@ class Database
             // If we can do this?
             throw new Exception("Failed to connect to the MySQL database (". $this->connection->connect_errno ."): ".$this->connection->connect_error);
         }
+        $query = file_get_contents(INCDIR.'/lib/oauth/oauth.sql');
+        $this->exec($query);
     }
 
     public static function getInstance()
@@ -34,7 +33,7 @@ class Database
         return self::$instance;
     }
 
-    public function select($table, $where = array(), $order = "ASC", $limit, $offset = 0)
+    public function select($table, $where = array(), $order = "", $limit = 0, $offset = 0)
     {
         if(!$table)
         {
@@ -84,6 +83,12 @@ class Database
             }
             $l = "LIMIT $offset, $limit";
         }
+
+        if($order && stripos($order, "ORDER BY ") !== 0)
+        {
+            $order = 'ORDER BY '. $order;
+        }
+
         return $this->exec("SELECT * FROM ". $table . " WHERE $w $order $l");
     }
 
@@ -211,6 +216,7 @@ class Database
         if(!$this->connection->real_query($query))
         {
             Logger::log(Logger::SEVERE, "An MySQL exception occurred (". $this->connection->errno ."): ".$this->connection->error);
+            Logger::log(Logger::SEVERE, "Query used: ".$query);
             return FALSE;
         }
         if($this->connection->field_count === 0)
@@ -221,6 +227,7 @@ class Database
         if(!$result)
         {
             Logger::log(Logger::SEVERE, "An MySQL exception occurred (". $this->connection->errno ."): ".$this->connection->error);
+            Logger::log(Logger::SEVERE, "Query used: ".$query);
             return FALSE;
         }
         $return = array();
@@ -229,6 +236,52 @@ class Database
             $return[] = $row;
         }
         return $return;
+    }
+
+    private $typeMapping = array(
+        'ts' => 'i',
+        'b' => 'i'
+    );
+
+    public function prepareAndExecute($sql, $parameters, &$results, $result_types)
+    {
+        $stmt = $this->connection->prepare($sql);
+        if(!$stmt)
+        {
+            die($this->connection->error);
+        }
+        $paramTypes = "";
+        $args = array();
+        for($i = 0; $i < count($parameters); $i += 2)
+        {
+            $type = $parameters[$i];
+            $paramTypes .= array_key_exists($type, $this->typeMapping) ? $this->typeMapping[$type] : $type;
+            $args[] = &$parameters[$i + 1];
+        }
+        array_unshift($args, $paramTypes);
+
+        call_user_func_array(array($stmt, 'bind_param'), $args);
+
+        $stmt->execute();
+
+        if($this->connection->field_count === 0)
+        {
+            $results = array('insert_id' => $this->connection->insert_id);
+        }
+        else
+        {
+            $rows = array();
+            $res = $stmt->get_result();
+            while($row = $res->fetch_array(MYSQLI_NUM)) {
+                $rows[] = $row;
+            }
+            $results = array('rows' => $rows);
+        }
+    }
+
+    public function getInsertedId()
+    {
+        return $this->connection->insert_id;
     }
 
 }

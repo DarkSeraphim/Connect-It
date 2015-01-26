@@ -1,0 +1,8 @@
+Options +FollowSymLinks
+
+RewriteEngine on
+
+RewriteBase /Connect-It
+
+# Fancy URLs for 
+RewriteRule oauth/((?:twitter)|(?:facebook)|(?:gplus)|(?:instagram))/? authenticate.php?service=$1&%{QUERY_STRING} [L]

@@ -1,15 +1,15 @@
 <?php
 
-class GPlus extends Media
+class Instagram extends Media
 {
 
     protected $id;
 
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->id = (new Property("id", "INT"))->primary()->autoIncrement();
-		parent::__construct("gplus");
-	}
+        parent::__construct("instagram");
+    }
 
     public static function load($where = array())
     {

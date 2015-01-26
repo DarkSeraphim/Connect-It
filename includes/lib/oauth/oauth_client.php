@@ -2190,6 +2190,12 @@ class oauth_client_class
 				$this->access_token_url = 'https://accounts.google.com/o/oauth2/token';
 				break;
 
+			case 'Instagram':
+				$this->oauth_version = "2.0";
+				$this->dialog_url = "https://api.instagram.com/oauth/authorize/?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&scope={SCOPE}&response_type=code&state={STATE}";
+				$this->access_token_url = "https://api.instagram.com/oauth/access_token";
+				break;
+
 			case 'LinkedIn':
 				$this->oauth_version = '1.0a';
 				$this->request_token_url = 'https://api.linkedin.com/uas/oauth/requestToken?scope={SCOPE}';

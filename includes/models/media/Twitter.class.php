@@ -1,15 +1,15 @@
 <?php
 
-class GPlus extends Media
+class Twitter extends Media
 {
 
     protected $id;
 
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->id = (new Property("id", "INT"))->primary()->autoIncrement();
-		parent::__construct("gplus");
-	}
+        parent::__construct("twitter");
+    }
 
     public static function load($where = array())
     {

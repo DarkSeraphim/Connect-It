@@ -30,9 +30,19 @@ class database_oauth_client_class extends oauth_client_class
 	var $session_path = '/';
 	var $sessions = array();
 
+	private $oauth_service;
+
+	public function __construct($oauth_service)
+	{
+		$this->oauth_service =$oauth_service;
+	}
+
 	Function Query($sql, $parameters, &$results, $result_types = null)
 	{
-		return $this->SetError('Database Query is not implemented');
+		$db = Database::getInstance();
+		$db->prepareAndExecute($sql, $parameters, $results, $result_types);
+		return TRUE;
+		//return $this->SetError('Database Query is not implemented');
 	}
 
 	Function SetupSession(&$session)
@@ -202,6 +212,15 @@ class database_oauth_client_class extends oauth_client_class
 			'i', $this->user,
 			'i', $oauth_session->id
 		);
+		global $CIuser;
+		if($CIuser)
+		{
+			$media = $CIuser->getMedia($this->oauth_service);
+			if($media)
+			{
+				$media->set('session_id', $oauth_session->id);
+			}
+		}
 		return $this->Query('UPDATE oauth_session SET session=?, state=?, access_token=?, access_token_secret=?, expiry=?, authorized=?, type=?, server=?, creation=?, refresh_token=?, user=? WHERE id=?', $parameters, $results);
 	}
 
@@ -261,6 +280,9 @@ class database_oauth_client_class extends oauth_client_class
 		$this->user = $user;
 		return true;
 	}
+
+
+
 };
 
 ?>
