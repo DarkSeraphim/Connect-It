@@ -1,8 +1,12 @@
+<IfModule mod_rewrite.c>
 Options +FollowSymLinks
 
 RewriteEngine on
 
-RewriteBase /Connect-It
-
 # Fancy URLs for 
 RewriteRule oauth/((?:twitter)|(?:facebook)|(?:gplus)|(?:instagram))/? authenticate.php?service=$1&%{QUERY_STRING} [L]
+
+#direct api requests to the right file
+RewriteRule ^/Connect-It/includes/lib/api/(.*)/(.*)$? Connect-It/includes/lib/api/$1/apiHandler.php?function=$2 [QSA]
+
+</IfModule>
