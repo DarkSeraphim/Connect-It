@@ -26,7 +26,6 @@ class apiHandler
 		
 	}
 	
-	s
 	function handleRequest() 
 	{
 		if($params['function'] && in_array($params['function'],$validRequests) && in_array($requesType, $validRequests[$params['function']]) && function_exists($params['function']))
