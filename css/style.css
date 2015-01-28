@@ -1,0 +1,273 @@
+/* { border:1px solid red}
+
+/* GENERAL */
+
+a {
+  color: #909090;
+}
+
+body {
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  padding-top: 40px;
+}
+
+hr {
+  border-color: #60bad6;
+  margin: 7px;
+}
+
+textarea {
+  background-color: white;
+  border: 0px solid black;
+  padding: 0px;
+  outline: none;
+  overflow: hidden;
+  resize: none;
+  width: 100%;
+}
+
+.textarea-poster {
+  padding: 5px;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.remove-padding {
+  padding: 0px;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.img-post {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* BUTTONS */
+
+button {
+  background-color: #60bad6;
+  border: 0px;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+button:hover {
+  background-color: white;
+  color: #60bad6;
+}
+
+.btn-g21 {
+  padding: 0px;
+}
+
+.btn-g21 > .fa {
+  padding: 3px;
+}
+
+.fa-heart:hover {
+  background: inherit;
+  color: red;
+}
+
+.fa-comments:hover {
+  background: inherit;
+  color: red;
+}
+
+.btn-post {
+  height: 102px;
+}
+
+.btn-platforms > .active {
+  background-color: white;
+  color: #60bad6;
+}
+
+.btn-platforms > button {
+  background-color: white;
+  color: #c6c6c6;
+}
+
+.btn-platforms:hover {
+  background-color: white;
+  color: #60bad6;
+}
+
+.btn-commentbar {
+  margin-top: 4px;
+  height: 40px;
+}
+
+.btn-hc-it > .active {
+  color: red;
+}
+
+button:focus {
+  outline: 0;
+}
+
+/* NAVIGATION BAR */
+
+.nav-icons {
+  max-height: 35px;
+  margin: 3px;
+  padding: 0px;
+}
+
+.nav-pills > li > a {
+  font-weight: bold;
+}
+
+.nav-pills > li > a:hover {
+  background-color: inherit;
+  color: #60bad6;
+}
+
+.nav-pills > li > a:focus {
+  background-color: inherit;
+  color: #909090;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  background-color: inherit;
+  color: #60bad6;
+}
+
+/* JUMBOTRON */
+
+.jumbotron {
+  background-color: #5D7A9A;
+  background-image: url("../img/jumbotron8.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  color: #FBF6D8;
+  margin-bottom: 15px;
+}
+
+/* POSTER */
+
+.poster {
+  background-color: white;
+  box-shadow: 0px 0px 1px 0px grey;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 750px;
+}
+
+.poster:hover {
+  box-shadow: 0px 0px 3px 1px #60bad6;
+}
+
+.textarea-poster {
+  padding: 5px;
+}
+
+/* VIEWER */
+.oops {
+  box-shadow: 0px 0px 1px 0px grey;
+  margin-bottom: 20px;
+}
+
+.oops:hover {
+  box-shadow: 0px 0px 3px 1px #60bad6;
+}
+
+.viewer {
+  background-color: #60bad6;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 750px;
+}
+
+.viewer > .postbox {
+  background-color: white;
+  min-height: 129px;
+}
+
+.img-thumbnail {
+  border: 0px;
+  border-radius: 10px;
+  background-color: inherit;
+  max-height: 95px;
+}
+
+.commentbar {
+  background-color: #60bad6;
+}
+
+.textarea-viewer {
+  padding-left: 5px;
+  margin-top: 4px;
+}
+
+.row > .comments {
+  background-color: #60d9ff;
+}
+
+.comments {
+  margin-top: 1px;
+}
+
+.comments-name {
+  background-color: #60d9ff;
+  padding: 2px;
+}
+
+.comments-message {
+  background-color: #60d9ff;
+  padding: 2px;
+  padding-left: 10px;
+}
+
+/* SCALING */
+
+@media only screen and (max-width: 992px) {
+  .propic {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  body {
+    padding-top: 40px;
+  }
+  .navbar-left {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 491px) {
+  body {
+    padding-top: 45px;
+  }
+  .jumbotron {
+    display: none;
+  }
+  .navbar-left {
+    display: none;
+  }
+  .nav-pills > li > a {
+    display: none;
+  }
+  .nav {
+    padding-right: auto;
+    padding-left: auto;
+  }
+}

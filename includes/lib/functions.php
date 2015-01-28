@@ -120,7 +120,7 @@ function getPosts(array $params)
 	}
 	//sorting to be implemeted
 	header('Content-type: application/json');
-	print json_encode($result)
+	print json_encode($result);
 }
 
 function comment(array $params, $requestType)
@@ -147,7 +147,7 @@ function comment(array $params, $requestType)
 		if (isset($response))
 		{
 			header('Content-type: application/json');
-			print json_encode($response)
+			print json_encode($response);
 		} else
 		{
 			print 'Failed';
