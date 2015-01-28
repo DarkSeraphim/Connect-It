@@ -96,7 +96,31 @@ function retweetTwit(array $params)
 
 function getPosts(array $params)
 {
-	client->CallAPI($url, 'GET', $parameters, $options, &$response);
+	$result = array();
+	//$socialMedia = 
+	for (i = 0; i < array_count_values($socialmedia); i++)
+	{
+		if ($socialMedia[$i] = 'twitter')
+		{
+			$url = $baseUrlTwitter + '/statuses/home_timeline.json';
+			client->CallAPI($url, 'GET', $parameters, $options, &$response);
+			$result['twitter'] = $response;
+		} else if ($socialMedia[$i] = 'facebook')
+		{
+			//$fbId =
+			$url = '$baseUrlFb' + $fbId + '/feed';
+			client->CallAPI($url, 'GET', $parameters, $options, &$response);
+			$result['facebook'] = $response;
+		} else if ($socialMedia[$i] = 'instagram')
+		{
+			$url = '$baseUrlInstagram' + '/users/self/feed';
+			client->CallAPI($url, 'GET', $parameters, $options, &$response);
+			$result['instagram'] = $response['data'];
+		}	
+	}
+	//sorting to be implemeted
+	header('Content-type: application/json');
+	print json_encode($result)
 }
 
 function comment(array $params, $requestType)
@@ -122,7 +146,8 @@ function comment(array $params, $requestType)
 		client->CallAPI($url, 'GET', $parameters, $options, &$response);
 		if (isset($response))
 		{
-			print 'Success';
+			header('Content-type: application/json');
+			print json_encode($response)
 		} else
 		{
 			print 'Failed';
@@ -140,16 +165,13 @@ function comment(array $params, $requestType)
 		
 		if ($params['socialmedia'] = 'facebook') 
 		{
-			$url = '$baseUrlFb' + $params['postid'] + '/comments';
-			$parameters['message'] = $params['text'];
-		} else if ($params['socialmedia'] = 'instagram') 
-		{
-			$url = '$baseUrlInstagram' + $params['postid'] + '/comments';
+			$url = '$baseUrlFb' + '/' + $params['postid'] + '/comments';
 			$parameters['message'] = $params['text'];
 		} else if ($params['socialmedia'] = 'twitter') 
 		{
-			$url = '$baseUrlTwitter' + $params['postid'] + '/comments';
-			$parameters['message'] = $params['text'];
+			$url = '$baseUrlTwitter' + '/statuses/update.json';
+			$parameters['status'] = $params['text'];
+			$parameters['in_reply_to_status_id'] = $params['postid'];
 		} else 
 		{
 			Die('Failed')
