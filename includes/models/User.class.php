@@ -98,17 +98,6 @@ class User extends Model
 		}
 		return $user;
 	}
-
-	public function setAccessToken($accessToken)
-	{
-		$this->accessToken = $accessToken;
-	}
-
-	public function getAccessToken()
-	{
-		return $this->accessToken;
-	}
-
 }
 
 ?>

@@ -7,7 +7,8 @@ class Instagram extends Media
 
     public function __construct()
     {
-        $this->id = (new Property("id", "INT"))->primary()->autoIncrement();
+        $this->id = (new Property("id", "INT"));
+        $this->id = $this->id->primary()->autoIncrement();
         parent::__construct("instagram");
     }
 

@@ -16,8 +16,10 @@ abstract class Media extends Model
 	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->userid = (new Property("userid", "INT"))->unique()->refers("user", "id");
+		$this->userid = (new Property("userid", "INT"));
+		$this->userid = $this->userid->unique()->refers("user", "id");
 		$this->session_id = new Property('session_id', 'INT');
+		$this->session_id = $this->session_id->unique()->refers("oauth_session", "id");
 		parent::__construct("media_".$name);
 	}
 

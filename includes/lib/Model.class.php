@@ -19,7 +19,8 @@ class Model
 		{
 			return;
 		}
-		$props = (new ReflectionClass(get_class($this)))->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
+		$props = (new ReflectionClass(get_class($this)))
+		$props = $props->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
 		$fields = array();
 		foreach($props as $prop)
 		{
@@ -337,7 +338,8 @@ foreach ($models as $model)
 	$classes = Utils::loadClasses($models, INCDIR . '/models', "Model");
 	foreach($classes as $class)
 	{
-		if((new ReflectionClass($class))->isAbstract())
+		$rc = new ReflectionClass($class);
+		if($rc->isAbstract())
 		{
 			continue;
 		}
